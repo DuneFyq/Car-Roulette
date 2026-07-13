@@ -1,5 +1,7 @@
-<script lang="ts" setup>
-import Sidebar from "./components/Sidebar.vue";
+<script setup lang="ts">
+import Header from "@/components/layout/Header.vue";
+import Sidebar from "@/components/layout/Sidebar.vue";
+import Footer from "@/components/layout/Footer.vue";
 </script>
 
 <template>
@@ -7,18 +9,17 @@ import Sidebar from "./components/Sidebar.vue";
     <Sidebar />
 
     <div class="body">
-      <header class="header">
-        <p class="header__text">Тестовый header</p>
-      </header>
+      <Header class="header" />
 
       <main class="main">
-        <h1 class="title">CarRoulette</h1>
-        <RouterView />
+        <RouterView v-slot="{ Component }">
+          <keep-alive>
+            <component :is="Component" />
+          </keep-alive>
+        </RouterView>
       </main>
 
-      <footer class="footer">
-        <p class="footer__text">Тестовый footer</p>
-      </footer>
+      <Footer class="footer" />
     </div>
   </div>
 </template>
@@ -26,8 +27,7 @@ import Sidebar from "./components/Sidebar.vue";
 <style scoped>
 .layout {
   display: flex;
-  flex: 1;
-  width: 100%;
+  min-height: 100vh;
 }
 
 .body {
@@ -43,18 +43,48 @@ import Sidebar from "./components/Sidebar.vue";
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin: 1.125rem 1.5625rem 1.125rem 1.125rem;
+}
+
+.title {
+  font-size: 3.125rem;
+  font-weight: 700;
 }
 
 .header,
 .footer {
   padding: 1rem 2rem;
+  border-radius: var(--border-radius);
+  min-height: 70px;
 }
 
-.spin {
-  background-color: red;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+.header {
+  border-bottom: 1px solid var(--color-bg-secondary);
+}
+
+.footer {
+  border-top: 1px solid var(--color-bg-secondary);
+}
+
+/* Планшеты и мобильные устройства */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .main {
+    justify-content: flex-start;
+    margin: 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .header,
+  .footer {
+    padding: 1rem;
+  }
 }
 </style>

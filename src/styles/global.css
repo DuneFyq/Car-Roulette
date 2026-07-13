@@ -3,7 +3,7 @@
  */
 @font-face {
   font-family: "Igra Sans";
-  src: url("./assets/fonts/IgraSans.woff2") format("woff2");
+  src: url("@/assets/fonts/IgraSans.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -11,77 +11,10 @@
 
 @font-face {
   font-family: "Onest";
-  src: url("./assets/fonts/Onest-VariableFont_wght.woff2") format("woff2");
+  src: url("@/assets/fonts/Onest-VariableFont_wght.woff2") format("woff2");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
-}
-
-/**
-  Переменные
- */
-:root {
-  color-scheme: dark;
-
-  --color-dark: #000000;
-  --color-light: #ffffff;
-
-  --color-gray-100: #e2e8f0;
-  --color-gray-300: #94a3b8;
-  --color-gray-500: #3c414a;
-
-  --color-bg-main: #0b0c10;
-  --color-bg-secondary: #1f2833;
-  --color-bg-panel: #4a6381;
-
-  --text-primary: var(--color-light);
-  --text-secondary: #c5a5c5;
-
-  --accent-neon: #00f0ff;
-  --accent-laser: #ff007f;
-  --accent-signal: #ff003c;
-
-  --border-radius: 15px;
-  --border-radius-sm: 2px;
-
-  --selection-bg: var(--accent-neon);
-  --selection-color: var(--color-dark);
-
-  --border-color: #313d4f;
-  --border: 1px solid var(--border-color);
-
-  --transition-duration: 0.2s;
-  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
-
-  --font-family-base: "Igra Sans", sans-serif;
-  --font-family-accent: "Onest", sans-serif;
-}
-
-[data-theme="light"] {
-  color-scheme: light;
-
-  --color-dark: #ffffff;
-  --color-light: #0f172a;
-
-  --color-gray-100: #1e293b;
-  --color-gray-300: #64748b;
-  --color-gray-500: #cbd5e1;
-
-  --color-bg-main: #f1f5f9;
-  --color-bg-secondary: #ffffff;
-  --color-bg-panel: #e2e8f0;
-
-  --text-primary: #0f172a;
-  --text-secondary: #64748b;
-
-  --accent-neon: #0891b2;
-  --accent-laser: #db2777;
-  --accent-signal: #dc2626;
-
-  --border-color: #cbd5e1;
-
-  --selection-bg: #0891b2;
-  --selection-color: #ffffff;
 }
 
 /**
@@ -104,7 +37,7 @@ body {
 
   font-family: var(--font-family-base);
   font-weight: 400;
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.75;
   color: var(--text-primary);
   background-color: var(--color-bg-main);
@@ -194,7 +127,7 @@ p {
 }
 
 p:not([class]):not(:last-child) {
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;
 }
 
 ul[class],
@@ -207,7 +140,7 @@ ol[class] {
 blockquote {
   margin: 0;
   border-left: 2px solid var(--accent-neon);
-  padding-left: 16px;
+  padding-left: 1rem;
   color: var(--text-secondary);
 }
 
@@ -256,6 +189,17 @@ a:hover {
     background-color 0.3s var(--transition-timing),
     color 0.3s var(--transition-timing),
     border-color 0.3s var(--transition-timing) !important;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  clip: rect(0 0 0 0);
+  overflow: hidden;
 }
 
 /**
