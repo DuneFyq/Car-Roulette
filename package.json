@@ -10,6 +10,7 @@
     "server": "json-server -w server/db.json"
   },
   "dependencies": {
+    "@vueuse/core": "^14.3.0",
     "axios": "^1.18.1",
     "normalize.css": "^8.0.1",
     "pinia": "^3.0.4",

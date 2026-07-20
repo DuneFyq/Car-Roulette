@@ -46,7 +46,7 @@ const purchasedItems = [
 </script>
 
 <template>
-  <section class="rule-page">
+  <section class="rule-page page">
     <h2 class="title">Правила</h2>
 
     <nav class="nav">
@@ -71,7 +71,7 @@ const purchasedItems = [
         (фиксирует баллы, ключи и элитные карты игроков). Любой игрок может
         узнать статистику.
       </p>
-      <p class="text text--important">
+      <p class="text important">
         <strong>Важно:</strong> обычные карточки и выпавшую машину должен знать
         только сам игрок. Всем видны только текущие баллы соперников и свои, их
         ключи и скрафченные элитные карточки.
@@ -139,7 +139,7 @@ const purchasedItems = [
       <h3 class="section-title card">Рулетка ходов и Карточки</h3>
       <p class="text">
         Перед заездом Судья запускает рулетку выбора хода, в которую входят все
-        зарегистрированные игроки. Когда рулетка выбирает конретного игрока, он
+        зарегистрированные игроки. Когда рулетка выбирает конкретного игрока, он
         обязан выбрать одно из трех действий:
       </p>
       <ul class="list">
@@ -334,80 +334,80 @@ const purchasedItems = [
 
 <style scoped>
 .rule-page {
-  --font-size-title: clamp(1.5rem, 1.15rem + 1.45vw, 2.6rem);
-  --font-size-text: clamp(0.5rem, 0.5rem + 1.5vw, 1rem);
-}
-
-a {
-  color: var(--accent-neon);
+  --font-size-title: clamp(1.25rem, 0.8864rem + 1.8182vw, 2.25rem);
+  --font-size-section-title: clamp(1.125rem, 0.8977rem + 1.1364vw, 1.75rem);
+  --font-size-text: clamp(0.625rem, 0.4886rem + 0.6818vw, 1rem);
 }
 
 .section {
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-radius: 5px;
-}
-.section:not(:last-child) {
   border-bottom: 1px solid var(--color-gray-900);
+}
+.section:last-child {
+  border-bottom: none;
 }
 
 .nav {
-  margin-bottom: 3rem;
-  padding-bottom: 2rem;
-  border-radius: 5px;
+  margin-bottom: 2rem;
 }
 
 .title {
   text-align: center;
-  font-size: 2.6rem;
+  font-size: var(--font-size-title);
   font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1.5em;
 }
 
 .section-title {
-  font-size: 1.89rem;
-  padding-bottom: 0.75rem;
+  font-size: var(--font-size-section-title);
   font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 0.5em;
 }
 
 .list {
-  margin-top: 0.625rem;
-  padding: 1rem;
+  font-size: var(--font-size-text);
+  line-height: 1.4;
+  margin-top: 0.625em;
+  padding: 1em;
+
   background-color: var(--color-bg-secondary);
-  border-radius: var(--border-radius);
+  border-radius: 0.25em;
 }
 
 .text {
   font-size: var(--font-size-text);
-  margin-bottom: 0.625rem;
   line-height: 1.5;
-  margin-top: 0.3125rem;
+  margin: 0.25em 0 0.5em;
 }
 
-.important {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  padding: 0.5rem 0.75rem 0.5rem 1rem;
+.important,
+.note {
+  margin: 0.75em 0;
+  padding: 0.5em 0.75em;
+  border-left: 0.25em solid;
+  border-radius: 0.25em;
+}
+
+.text.important {
   background-color: var(--important-bg);
-  border-left: 0.25rem solid var(--important-border);
-  border-radius: 0.25rem;
-}
-.text.note {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  padding: 0.5rem 0.75rem 0.5rem 1rem;
-  background-color: var(--note-bg);
-  border-left: 0.25rem solid var(--note-border);
-  border-radius: 0.25rem;
+  border-left-color: var(--important-border);
 }
 
-/* Планшеты и мобильные устройства */
-@media (max-width: 768px) {
+.text.note {
+  background-color: var(--note-bg);
+  border-left-color: var(--note-border);
+}
+
+@media (width <= 768px) {
   .section-title {
     text-align: center;
   }
 
   .text {
-    text-align: justify;
+    text-align: left;
   }
 }
 </style>

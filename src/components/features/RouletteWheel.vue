@@ -1,17 +1,19 @@
 <script lang="ts" setup>
 import { ref, watch, onUnmounted, computed } from "vue";
 import Pointer from "@/assets/images/pointer-down-fill-svgrepo-com.svg?component";
-import SlotRoulette from "@/components/ui/SlotRoulette.vue";
+import SpinButton from "@/components/ui/SpinButton.vue";
+import type { TSlot } from "@/types/TSlot";
+import { deepShuffle } from "@/utils/shuffle";
 // ----------------------------------------------------------------------------------
 type States = Record<string | number, boolean>;
-type ComputeFn = (items: unknown[], states: States) => string;
+type ComputeFn = (items: TSlot[], states: States) => TSlot;
 interface ComponentOption {
   key: string | number;
   default?: boolean;
   label?: string;
 }
 interface Props {
-  items: unknown[];
+  items: TSlot[];
   options?: ComponentOption[];
   computeFn: ComputeFn;
   duration?: number;
@@ -31,7 +33,6 @@ const buildStates = (options: ComponentOption[]): States => {
   }
   return states;
 };
-
 watch(
   () => props.options,
   (newOptions) => {
@@ -40,71 +41,68 @@ watch(
   { immediate: true, deep: true },
 );
 // ----------------------------------------------------------------------------------
+const shuffledBase = computed(() => {
+  if (!props.items || props.items.length === 0) {
+    return [{ label: "Тест" }] as any;
+  }
+
+  return deepShuffle(props.items);
+});
+
 const extendedItems = computed(() => {
-  const base = props.items.length ? props.items : [{ label: "Тест" }];
+  const base = shuffledBase.value;
   const repeats = Math.max(4, Math.ceil(60 / base.length));
   return Array.from({ length: repeats }, () => base).flat();
 });
 // ----------------------------------------------------------------------------------
-const isSpinning = ref(false);
-const currentShift = ref(0);
+const ITEM_WIDTH = 100;
+const GAP = 22;
 
-const trackStyle = computed(() => ({
-  transform: `translate3d(-${currentShift.value}px, 0, 0)`,
-  transition: isSpinning.value
-    ? "transform 4s cubic-bezier(0.25, 1, 0.5, 1)"
-    : "none",
-}));
+const isSpinning = ref(false);
+const targetSlotIndex = ref(0);
+watch(
+  () => extendedItems.value?.length,
+  (newLength) => {
+    if (newLength) {
+      targetSlotIndex.value = Math.trunc(newLength / 2);
+    }
+  },
+  { immediate: true },
+);
+
+const trackStyle = computed(() => {
+  const slotLeftEdge = targetSlotIndex.value * (ITEM_WIDTH + GAP);
+  const halfItem = ITEM_WIDTH / 2;
+
+  return {
+    transform: `translate3d(calc(50% - ${slotLeftEdge}px - ${halfItem}px), 0, 0)`,
+    transition: isSpinning.value
+      ? `transform ${props.duration}s cubic-bezier(0.25, 1, 0.5, 1)`
+      : "none",
+  };
+});
 // ----------------------------------------------------------------------------------
-const spinResult = ref<string>("Прокрутите");
-const result = ref<string>("Прокрутите");
+const spinResult = ref<TSlot>({ default: "Сначала прокрутите" } as TSlot);
+const result = ref<TSlot>({ default: "Сначала прокрутите" } as TSlot);
 const timeLeft = ref(0);
 let timerId: ReturnType<typeof setTimeout> | null = null;
-
-const containerRef = ref<HTMLDivElement | null>(null);
-
-const countItems = (items: unknown) => {
-  if (!items) return 0;
-  if (typeof items !== "object") return 0;
-
-  if (Array.isArray(items)) {
-    if (items.length > 0 && Array.isArray(items[0])) {
-      return items.reduce((sum, arr) => sum + countItems(arr), 0);
-    }
-    return items.length;
-  }
-
-  return Object.values(items).reduce((sum, val) => {
-    if (Array.isArray(val)) return sum + val.length;
-    return sum;
-  }, 0);
-};
-
-function getShift(slotNumber: number) {
-  const ITEM_WIDTH = 100;
-  const GAP = 27.5;
-
-  const slotLeftEdge = slotNumber * (ITEM_WIDTH + GAP);
-  const slotCenter = slotLeftEdge + ITEM_WIDTH / 2;
-
-  const containerWidth = containerRef.value
-    ? containerRef.value.clientWidth
-    : 800;
-  const rouletteCenter = containerWidth / 2;
-
-  return slotCenter - rouletteCenter;
-}
 
 const spin = () => {
   if (isSpinning.value) return;
 
   isSpinning.value = true;
   timeLeft.value = props.duration;
+  result.value = { default: "Результат..." };
 
-  spinResult.value = props.computeFn(props.items, optionStates.value);
+  let resultValue = props.computeFn(props.items, optionStates.value);
+  do {
+    resultValue = props.computeFn(props.items, optionStates.value);
+  } while (resultValue === result.value);
+  spinResult.value = resultValue;
 
-  console.log(props.items);
-  currentShift.value = getShift(countItems(props.items));
+  const winSlot =
+    extendedItems.value?.findIndex((item) => item.id === resultValue.id) ?? -1;
+  targetSlotIndex.value = winSlot;
 
   timerId = setTimeout(function tick() {
     timeLeft.value--;
@@ -113,6 +111,7 @@ const spin = () => {
     } else {
       result.value = spinResult.value;
       timerId = null;
+      isSpinning.value = false;
     }
   }, 1000);
 };
@@ -124,7 +123,7 @@ const cancelSpin = () => {
   }
   isSpinning.value = false;
   timeLeft.value = 0;
-  currentShift.value = 0;
+  targetSlotIndex.value = 0;
 };
 
 onUnmounted(cancelSpin);
@@ -137,13 +136,14 @@ defineExpose({ cancelSpin });
 
     <div ref="containerRef" class="wheel-container">
       <div class="wheel-track" :style="trackStyle">
-        <slot name="items" :items="extendedItems" :result="spinResult">
-          <!-- Слоты -->
-        </slot>
-        <SlotRoulette :key="spinResult" :title="spinResult" />
+        <template
+          v-for="(item, index) in extendedItems"
+          :key="`${item.id || 'fallback'}-${index}`"
+        >
+          <slot name="item" :item="item" :index="index" />
+        </template>
       </div>
     </div>
-
     <div v-if="props.options.length" class="options">
       <label
         v-for="option in props.options"
@@ -156,15 +156,12 @@ defineExpose({ cancelSpin });
     </div>
 
     <div class="result">
-      <p class="test-wait">Таймер: {{ timeLeft }} секунд</p>
       <slot name="result" :value="result">
         {{ result }}
       </slot>
     </div>
 
-    <button @click="spin" class="spin-button" :disabled="isSpinning">
-      {{ isSpinning ? "Крутится..." : "Крутить" }}
-    </button>
+    <SpinButton :is-spinning="isSpinning" :spin="spin" />
   </div>
 </template>
 
@@ -198,7 +195,7 @@ defineExpose({ cancelSpin });
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  gap: 1.7188rem;
+  gap: 21.5px;
   height: 100%;
   will-change: transform;
 }
@@ -219,20 +216,5 @@ defineExpose({ cancelSpin });
   font-size: 1.5rem;
   font-weight: bold;
   min-height: 2rem;
-}
-
-.spin-button {
-  font-size: 1.25rem;
-  padding: 0.625rem 1.25rem;
-  background: var(--color-gray-300);
-}
-
-.spin-button:hover:not(:disabled) {
-  background: var(--color-gray-400);
-}
-
-.spin-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 </style>

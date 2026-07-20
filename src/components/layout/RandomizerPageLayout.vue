@@ -14,7 +14,7 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <section class="randomizer-page">
+  <section class="randomizer-page page">
     <h2 class="title">{{ title }}</h2>
 
     <div class="spin">
@@ -27,7 +27,9 @@ withDefaults(defineProps<Props>(), {
 
     <template v-if="listTitle">
       <h3 class="list-title">{{ listTitle }}</h3>
-      <slot name="list" />
+      <div class="list">
+        <slot name="list" />
+      </div>
     </template>
 
     <History />
@@ -36,15 +38,39 @@ withDefaults(defineProps<Props>(), {
 
 <style scoped>
 .randomizer-page {
-  text-align: center;
+  --font-size-title: clamp(1.25rem, 0.8864rem + 1.8182vw, 2.25rem);
+  --font-size-section-title: clamp(1.125rem, 0.8977rem + 1.1364vw, 1.75rem);
+  --font-size-text: clamp(0.625rem, 0.4886rem + 0.6818vw, 1rem);
+}
 
-  width: 100%;
-  height: 100%;
+.randomizer-page {
+  text-align: center;
 }
 
 .title {
-  font-size: 2.6rem;
+  font-size: var(--font-size-title);
   font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.5em;
+}
+
+.list-title {
+  font-size: var(--font-size-section-title);
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0.5em;
+}
+
+.list {
+  text-align: left;
+
+  font-size: var(--font-size-text);
+  line-height: 1.4;
+  margin-top: 0.625em;
+  padding: 1em;
+
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--border-radius);
 }
 
 .spin {

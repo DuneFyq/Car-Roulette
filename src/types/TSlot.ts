@@ -1,0 +1,1 @@
+export type TSlot = Record<string, string>;

@@ -1,16 +1,12 @@
 <script lang="ts" setup>
 import LogoutIcon from "@/assets/images/logout-svgrepo-com.svg?component";
-
-const handleLogout = () => {
-  console.log("logout");
-};
 </script>
 
 <template>
-  <button class="logout-link" @click="handleLogout">
+  <RouterLink :to="{ name: 'page.logout' }" class="logout-link">
     <LogoutIcon class="logout-link-icon" />
     <span class="logout-link-text">Выйти из аккаунта</span>
-  </button>
+  </RouterLink>
 </template>
 
 <style scoped>
@@ -18,7 +14,7 @@ const handleLogout = () => {
   display: inline-flex;
   align-items: center;
   color: inherit;
-  font-size: 0.875rem;
+  font-size: clamp(0.800rem, 0.7659rem + 0.1705vw, 0.813rem);
   overflow: hidden;
   border-radius: 0.75rem;
   padding: 1.125rem;
@@ -26,16 +22,17 @@ const handleLogout = () => {
 }
 .logout-link:hover,
 .logout-link:active {
-  background-color: var(--accent-laser);
+  background: var(--accent-laser);
 }
 
 .logout-link-icon {
-  width: 1.125rem;
+  width: 1.5625rem;
+  height: 1.5625rem;
   flex-shrink: 0;
 }
 
 .logout-link-text {
   color: inherit;
-  margin-left: 0.75rem;
+  margin-left: .5em;
 }
 </style>

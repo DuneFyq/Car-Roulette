@@ -1,16 +1,31 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import Home from "@/components/pages/Home.vue";
-import RulePage from "@/components/pages/RulePage.vue";
-import CarPage from "@/components/pages/CarPage.vue";
-import CardPage from "@/components/pages/CardPage.vue";
-
 const routes = [
-  { path: "/", component: Home },
-  { path: "/rules", component: RulePage },
-  { path: "/cars", component: CarPage },
-  { path: "/cards", component: CardPage },
-  { path: "/logout", component: RulePage },
+  {
+    path: "/",
+    component: () => import("@/components/pages/Home.vue"),
+    name: "home",
+  },
+  {
+    path: "/rules",
+    component: () => import("@/components/pages/RulePage.vue"),
+    name: "page.rule",
+  },
+  {
+    path: "/cars",
+    component: () => import("@/components/pages/CarPage.vue"),
+    name: "page.car",
+  },
+  {
+    path: "/cards",
+    component: () => import("@/components/pages/CardPage.vue"),
+    name: "page.card",
+  },
+  {
+    path: "/logout",
+    component: () => import("@/components/pages/LogoutPage.vue"),
+    name: "page.logout",
+  },
 ];
 
 const router = createRouter({

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
-import { useTheme } from "@/composables/useTheme.ts";
+import { useDark, useToggle } from "@vueuse/core";
 
 import HomeIcon from "@/assets/images/home-svgrepo-com.svg?component";
 import RuleIcon from "@/assets/images/rule-svgrepo-com.svg?component";
@@ -19,13 +19,17 @@ const profile = reactive({
   rank: "bronze I",
 });
 
-const { isDark, toggleTheme } = useTheme();
+const isDark = useDark({
+  valueDark: "dark",
+  valueLight: "light",
+});
+const toggleDark = useToggle(isDark);
 
 const menuItems = [
-  { to: "/", icon: HomeIcon, text: "Домой" },
-  { to: "/rules", icon: RuleIcon, text: "Правила" },
-  { to: "/cars", icon: CarIcon, text: "Машины" },
-  { to: "/cards", icon: CardIcon, text: "Карточки" },
+  { to: "home", icon: HomeIcon, text: "Домой" },
+  { to: "page.rule", icon: RuleIcon, text: "Правила" },
+  { to: "page.car", icon: CarIcon, text: "Машины" },
+  { to: "page.card", icon: CardIcon, text: "Карточки" },
 ];
 
 const isMinify = ref(false);
@@ -43,8 +47,8 @@ const isMinify = ref(false);
         />
       </button>
 
-      <button class="theme-toggle-button" @click="toggleTheme">
-        {{ isDark ? "☀️ Светлая" : "🌙 Тёмная" }}
+      <button class="theme-toggle-button" @click="toggleDark()">
+        <span>{{ isDark ? "Dark" : "Light" }}</span>
       </button>
     </header>
 
@@ -118,16 +122,16 @@ const isMinify = ref(false);
 }
 
 .minify-button {
-  fill: none;
   display: none;
 }
 
 /* Планшеты и мобильные устройства */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .sidebar {
     --sidebar-width: 100%;
     --sidebar-padding-y: 0.75rem;
     --sidebar-padding-x: 1rem;
+    --sidebar-padding: var(--sidebar-padding-y) var(--sidebar-padding-x);
   }
 
   .sidebar {
@@ -135,7 +139,6 @@ const isMinify = ref(false);
 
     height: auto;
     max-height: 500px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     transition:
       max-height 0.4s ease-in-out,

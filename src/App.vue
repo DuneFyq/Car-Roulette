@@ -6,16 +6,16 @@ import Footer from "@/components/layout/Footer.vue";
 
 <template>
   <div class="layout">
-    <Sidebar />
+    <Sidebar class="sidebar" />
 
     <div class="body">
       <Header class="header" />
 
       <main class="main">
         <RouterView v-slot="{ Component }">
-          <keep-alive>
+          <KeepAlive :include="['page.car', 'page.card']">
             <component :is="Component" />
-          </keep-alive>
+          </KeepAlive>
         </RouterView>
       </main>
 
@@ -30,6 +30,10 @@ import Footer from "@/components/layout/Footer.vue";
   min-height: 100vh;
 }
 
+.sidebar {
+  box-shadow: var(--box-shadow-base);
+}
+
 .body {
   display: flex;
   flex-direction: column;
@@ -41,20 +45,13 @@ import Footer from "@/components/layout/Footer.vue";
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 1.125rem 1.5625rem 1.125rem 1.125rem;
-}
-
-.title {
-  font-size: 3.125rem;
-  font-weight: 700;
+  margin: 1.5rem;
 }
 
 .header,
 .footer {
+  box-shadow: var(--box-shadow-base);
   padding: 1rem 2rem;
-  border-radius: var(--border-radius);
   min-height: 70px;
 }
 
@@ -67,7 +64,7 @@ import Footer from "@/components/layout/Footer.vue";
 }
 
 /* Планшеты и мобильные устройства */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .layout {
     flex-direction: column;
   }

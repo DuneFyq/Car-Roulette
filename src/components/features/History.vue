@@ -40,15 +40,19 @@ onMounted(() => {
 
 <style scoped>
 .title {
-  text-align: center;
-  font-size: 2.6rem;
-  font-weight: 700;
+  font-size: clamp(1.125rem, 0.8977rem + 1.1364vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0.5em;
 }
 
 .history-list {
+  font-size: clamp(0.625rem, 0.4886rem + 0.6818vw, 1rem);
   text-align: left;
-  margin-top: 0.625rem;
-  padding: 1rem;
+  line-height: 1.6;
+  margin-top: 0.625em;
+  padding: 1em;
+
   background-color: var(--color-bg-secondary);
   border-radius: var(--border-radius);
 }

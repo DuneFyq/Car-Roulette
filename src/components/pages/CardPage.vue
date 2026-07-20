@@ -5,26 +5,31 @@ import CardList from "@/components/features/CardList.vue";
 import SlotRoulette from "@/components/ui/SlotRoulette.vue";
 import RandomizerPageLayout from "@/components/layout/RandomizerPageLayout.vue";
 
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { useCardStore } from "@/stores/card";
-import type { TCard } from "@/types/TCard";
 import { randomFromArray } from "@/utils/randomUtils";
-import { useStoreInit } from "@/composables/useStoreInit";
 
-const getRandomCardItem = (items: unknown[]) => {
-  const randomCard = randomFromArray(items) as TCard;
-  return String(randomCard.name ?? "Карточка не найдена");
+import type { TSlot } from "@/types/TSlot";
+
+defineOptions({
+  name: "page.card",
+});
+
+const getRandomCardItem = (items: TSlot[]): TSlot => {
+  return randomFromArray(items);
 };
 
 const store = useCardStore();
-useStoreInit(store);
+onMounted(() => {
+  store.loadCards?.();
+});
 
 const formattedCards = computed(() => {
   return store.cards.map((card) => {
     const [name, content] = Object.entries(card)[0];
 
     return {
-      id: `${name}-${content.action}-${content.type}`,
+      id: `${name}-${content?.action}-${content?.type}`,
       name,
       ...content,
     };
@@ -42,18 +47,20 @@ const formattedCards = computed(() => {
       <RouletteWheel
         v-if="formattedCards && formattedCards.length > 0"
         :items="formattedCards"
+        :duration="5"
         :compute-fn="getRandomCardItem"
       >
         <template #result="slotProps">
-          <p class="winning-car">Карточки: {{ slotProps.value }}</p>
+          <p class="winning-card">
+            Карточка:
+            {{
+              slotProps.value?.name ?? slotProps.value?.default ?? "Не найдено"
+            }}
+          </p>
         </template>
 
-        <template #items>
-          <SlotRoulette
-            v-for="({ id, name }, index) in formattedCards"
-            :key="id"
-            :title="name + index"
-          />
+        <template #item="{ item }">
+          <SlotRoulette :title="item.name ?? item.label ?? 'Элемент'" />
         </template>
       </RouletteWheel>
     </template>
@@ -61,7 +68,7 @@ const formattedCards = computed(() => {
     <template #extra>
       <h3 class="list-title">Список имеющихся карт</h3>
       <ul class="list-available-cards">
-        <li v-for="{ name } in formattedCards" :key="name">{{ name }}</li>
+        <li v-for="card in formattedCards" :key="card.id">{{ card.name }}</li>
       </ul>
     </template>
 
@@ -71,4 +78,22 @@ const formattedCards = computed(() => {
   </RandomizerPageLayout>
 </template>
 
-<style scoped></style>
+<style scoped>
+.list-title {
+  font-size: clamp(1.125rem, 0.8977rem + 1.1364vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0.5em;
+}
+
+.list-available-cards {
+  font-size: clamp(0.625rem, 0.4886rem + 0.6818vw, 1rem);
+  text-align: left;
+  line-height: 1.6;
+  margin-top: 0.625em;
+  padding: 1em;
+
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--border-radius);
+}
+</style>

@@ -18,6 +18,14 @@
 }
 
 /**
+  Для страниц
+ */
+.page {
+  width: 100%;
+  height: 100%;
+}
+
+/**
   Базовые настройки
  */
 *,
@@ -170,11 +178,13 @@ a:hover {
 
 /**
   Выделение текста
- */
+  (Пока убрал)
+ 
 ::selection {
   background-color: var(--selection-bg);
   color: var(--selection-color);
 }
+*/
 
 /**
   Плавный переход при смене темы

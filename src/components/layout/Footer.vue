@@ -1,6 +1,13 @@
+<script lang="ts" setup>
+import { useDateFormat, useNow } from "@vueuse/core";
+
+const formatted = useDateFormat(useNow(), "YYYY"); // 2026
+// const formatted = useDateFormat(useNow(), 'YYYY-MM-DD HH:mm:ss')
+</script>
+
 <template>
   <footer class="footer">
-    <span>© 2026 Car Roulette</span>
+    <span>{{ formatted }} Car Roulette</span>
     <nav class="footer-nav">
       <a href="#">О проекте</a>
       <a href="#">Контакты</a>
@@ -19,6 +26,6 @@
 
 .footer-nav {
   display: flex;
-  gap: .625rem;
+  gap: 0.625rem;
 }
 </style>

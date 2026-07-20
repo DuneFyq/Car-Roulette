@@ -11,7 +11,7 @@ export const useCarStore = defineStore("cars", {
   }),
 
   actions: {
-    async loadCards() {
+    async loadCars() {
       this.loading = true;
       try {
         const response = await axios.get<ICarsResponse>(
